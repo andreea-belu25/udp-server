@@ -1,22 +1,22 @@
 Server:
-	- deschide un socket UDP pentru a putea primi mesaje UDP si un socket TCP pentru a putea primi cereri de conexiune TCP de la clienti
-	- porneste un poll pentru a asculta pe acesti socketi, pe stdin si pe socket-urile de la clienti pentru mesaje
-	- daca primeste un mesaj pe socket-ul TCP, obtine si id-ul client-ului, verifica daca id-ul respectiv este deja conectat sau nu. In cazul in care nu este conectat, adauga socket-ul respectiv in poll, altfel inchide client-ul respectiv.
-	- daca primeste un mesaj pe socket-ul UDP, verifica daca exista cineva abonat la topic-ul mesajului, si acel client este si conectat. Daca da, trimite mesajul mai departe.
-	- daca primeste o comanda pe STDIN, verifica daca comanda este "exit". Daca da, inchide atat serverul, cat si toti clientii conectati.
-	- daca primeste un mesaj pe un socket ce ii apartine unui client, verifica daca comanda este:
-		- "exit": caz in care deconecteaza client-ul.
-		- "subscribe topic": caz in care aboneaza client-ul la topic-ul respectiv, daca nu este deja abonat.
-		- "unsubscribe topic": caz in care dezaboneaza client-ul de la topic-ul respectiv, daca este abonat.
+	- Opens a UDP socket to receive UDP messages and a TCP socket to receive TCP connection requests from clients
+	- Starts a poll to listen on these sockets, on stdin, and on sockets from clients for messages
+	- If it receives a message on the TCP socket, it obtains the client's ID and checks whether that ID is already connected or not. If not connected, it adds that socket to poll; otherwise it closes that client.
+	- If it receives a message on the UDP socket, it checks if anyone is subscribed to the message's topic and that client is also connected. If yes, it forwards the message.
+	- If it receives a command on STDIN, it checks if the command is "exit". If yes, it closes both the server and all connected clients.
+	- If it receives a message on a socket belonging to a client, it checks if the command is:
+		- "exit": in which case it disconnects the client.
+		- "subscribe topic": in which case it subscribes the client to that topic, if not already subscribed.
+		- "unsubscribe topic": in which case it unsubscribes the client from that topic, if subscribed.
 
 Client:
-	- la pornire, deschide un socket TCP pentru a comunica cu server-ul, si isi trimie id-ul.
-	- porneste poll pentru a asculta mesaje atat de la server cat si de la STDIN.
-	- daca primeste "exit" la stdin, inchide client-ul.
-	- daca primeste mesaj de la server:
-		- in cazul in care mesajul indica inchiderea client-ului, se inchide.
-		- altfel afiseaza mesajul.
+	- At startup, opens a TCP socket to communicate with the server and sends its ID.
+	- Starts poll to listen for messages both from the server and from STDIN.
+	- If it receives "exit" at stdin, it closes the client.
+	- If it receives a message from the server:
+		- In case the message indicates closing the client, it closes.
+		- Otherwise it displays the message.
 
-Incadrarea mesajelor:
-	- la trimite, mesajele sunt incadrate, avand atasate la inceput lungimea lor.
-	- la primire, mai intai se citeste lungimea mesajelor, si apoi se citeste mesajul de lungimea respectiva.
+Message framing:
+	- When sending, messages are framed, having their length attached at the beginning.
+	- When receiving, first the message length is read, and then the message of that length is read.
