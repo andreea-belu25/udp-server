@@ -1,4 +1,5 @@
 Server:
+---
 - Opens a UDP socket to receive UDP messages and a TCP socket to receive TCP connection requests from clients
 - Starts a poll to listen on these sockets, on stdin, and on sockets from clients for messages
 - If it receives a message on the TCP socket:
@@ -19,6 +20,7 @@ Server:
   - "unsubscribe topic": unsubscribes the client from that topic, if subscribed
 
 Client:
+---
 - At startup:
   - Opens a TCP socket to communicate with the server
   - Sends its ID
@@ -30,6 +32,7 @@ Client:
   - Otherwise displays the message
 
 Message framing:
+---
 - When sending:
   - Messages are framed with their length attached at the beginning
 - When receiving:
